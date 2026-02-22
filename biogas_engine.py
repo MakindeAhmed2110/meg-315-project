@@ -266,6 +266,9 @@ class BiogasKinetics:
     def to_dict(self) -> dict:
         """Return all outputs as a dict (e.g. for session state or reports)."""
         self.run()
+        dry_matter_kg_s = self._moisture_rich_kg_s * (1.0 - self.moisture_content_pct / 100.0)
+        days = self._days_to_maturity if not np.isinf(self._days_to_maturity) else 30.0
+        volatile_yield_kg = dry_matter_kg_s * days * SECONDS_PER_DAY * 0.3
         return {
             "added_water_kg_s": self._added_water_kg_s,
             "total_slurry_kg_s": self._total_slurry_kg_s,
@@ -282,4 +285,5 @@ class BiogasKinetics:
             "methane_mass_kg": self._methane_mass_kg,
             "ignition_power_kw": self._ignition_power_kw,
             "methane_purity": self._methane_purity,
+            "volatile_yield_kg": volatile_yield_kg,
         }
